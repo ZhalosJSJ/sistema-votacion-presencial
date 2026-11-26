@@ -1,0 +1,46 @@
+<!--
+  ProyectsZH — versión horizontal para fondos oscuros.
+  Construido con la geometría del favicon oficial (proyectszh.site/img/favicon.svg),
+  con los colores invertidos como en la imagen de marca del sitio.
+
+  Para usar otro logo, cambia este archivo o apunta ORGANIZACION_LOGO a otro
+  nombre dentro de static/ (ver .env.example).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 64" width="300" height="64"
+     role="img" aria-label="ProyectsZH">
+
+  <!-- Trébol de fondo -->
+  <g fill="#4B5157">
+    <path d="M0-1C-1-2.5-7.5-5.5-7.5-10C-7.5-13.5-3.5-14.5 0-11C3.5-14.5 7.5-13.5 7.5-10C7.5-5.5 1-2.5 0-1Z" transform="translate(32 30) rotate(45) scale(2.25)"/>
+    <path d="M0-1C-1-2.5-7.5-5.5-7.5-10C-7.5-13.5-3.5-14.5 0-11C3.5-14.5 7.5-13.5 7.5-10C7.5-5.5 1-2.5 0-1Z" transform="translate(32 30) rotate(135) scale(2.25)"/>
+    <path d="M0-1C-1-2.5-7.5-5.5-7.5-10C-7.5-13.5-3.5-14.5 0-11C3.5-14.5 7.5-13.5 7.5-10C7.5-5.5 1-2.5 0-1Z" transform="translate(32 30) rotate(225) scale(2.25)"/>
+    <path d="M0-1C-1-2.5-7.5-5.5-7.5-10C-7.5-13.5-3.5-14.5 0-11C3.5-14.5 7.5-13.5 7.5-10C7.5-5.5 1-2.5 0-1Z" transform="translate(32 30) rotate(315) scale(2.25)"/>
+  </g>
+
+  <!-- Monitor y pie -->
+  <rect x="14" y="18" width="36" height="24" rx="4" fill="#F7FCFB"/>
+  <path d="M26 49h12M32 42v7" fill="none" stroke="#F7FCFB" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Monograma ZH en la pantalla -->
+  <g fill="#2E3236">
+    <polygon points="24.15,25.60 30.95,25.60 30.95,27.90 27.02,32.10 30.95,32.10 30.95,34.40 24.15,34.40 24.15,32.10 28.07,27.90 24.15,27.90"/>
+    <rect x="32.65" y="25.6" width="2.3" height="8.8"/>
+    <rect x="37.55" y="25.6" width="2.3" height="8.8"/>
+    <rect x="32.65" y="28.85" width="7.2" height="2.3"/>
+  </g>
+
+  <!-- Estrella y trébol pequeño -->
+  <polygon points="52.00,7.00 53.32,10.18 56.76,10.45 54.14,12.70 54.94,16.05 52.00,14.25 49.06,16.05 49.86,12.70 47.24,10.45 50.68,10.18" fill="#5AC4C0"/>
+  <path d="M12 52c0.5 2.5 2.0 4.5 4.0 6.0" fill="none" stroke="#5AC4C0" stroke-width="1.30" stroke-linecap="round"/>
+  <g fill="#5AC4C0">
+    <path d="M0-1C-1-2.5-7.5-5.5-7.5-10C-7.5-13.5-3.5-14.5 0-11C3.5-14.5 7.5-13.5 7.5-10C7.5-5.5 1-2.5 0-1Z" transform="translate(12 52) rotate(45) scale(0.5)"/>
+    <path d="M0-1C-1-2.5-7.5-5.5-7.5-10C-7.5-13.5-3.5-14.5 0-11C3.5-14.5 7.5-13.5 7.5-10C7.5-5.5 1-2.5 0-1Z" transform="translate(12 52) rotate(135) scale(0.5)"/>
+    <path d="M0-1C-1-2.5-7.5-5.5-7.5-10C-7.5-13.5-3.5-14.5 0-11C3.5-14.5 7.5-13.5 7.5-10C7.5-5.5 1-2.5 0-1Z" transform="translate(12 52) rotate(225) scale(0.5)"/>
+    <path d="M0-1C-1-2.5-7.5-5.5-7.5-10C-7.5-13.5-3.5-14.5 0-11C3.5-14.5 7.5-13.5 7.5-10C7.5-5.5 1-2.5 0-1Z" transform="translate(12 52) rotate(315) scale(0.5)"/>
+  </g>
+
+  <!-- Logotipo -->
+  <text x="72" y="40"
+        font-family="'Poppins','Montserrat','Segoe UI',Tahoma,Verdana,sans-serif"
+        font-size="30" font-weight="600" fill="#F7FCFB">Proyects<tspan fill="#5AC4C0">ZH</tspan></text>
+</svg>

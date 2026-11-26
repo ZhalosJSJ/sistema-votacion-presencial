@@ -1,0 +1,38 @@
+# --- Entorno y dependencias ---
+.venv/
+__pycache__/
+*.pyc
+
+# --- Configuración y credenciales (NUNCA versionar) ---
+.env
+
+# --- Base de datos y resultados de votaciones reales ---
+db.sqlite3
+resultados_votacion.csv
+resultados_votacion.xlsx
+
+# --- Fotos de candidatos: datos personales de terceros ---
+# Las imágenes se suben desde el panel de administración de Django.
+media/
+
+# --- Archivos generados ---
+qr_votacion.png
+qr_votacion_formulario.png
+
+# --- Documentación operativa interna (contiene usuario de admin y rutas de respaldo) ---
+RESTAURAR.md
+
+# --- Imágenes sueltas de trabajo, no usadas por la aplicación ---
+acesol.jpeg
+acesol2
+unnamed.jpg
+logo blanco.jpeg
+WhatsApp Image*.jpeg
+
+# --- Marca del cliente para el que se usó la app (no se publica) ---
+# El logo se configura con ORGANIZACION_LOGO en el .env.
+static/logo_acesol.jpg
+static/sol_acesol.png
+
+# --- Herramientas locales ---
+.claude/

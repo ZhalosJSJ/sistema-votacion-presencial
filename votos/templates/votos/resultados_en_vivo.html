@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados en vivo</title>
+    {% load static %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: white;
+            margin: 0;
+            padding: 116px 24px 24px 24px;
+        }
+        .logo-esquina {
+            position: fixed;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f7f7f7;
+            border-radius: 10px;
+            padding: 8px 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+            z-index: 10;
+        }
+        .logo-esquina img {
+            display: block;
+            height: 68px;
+            width: auto;
+        }
+        h1 { text-align: center; margin-bottom: 4px; }
+        .subtitulo { text-align: center; color: #94a3b8; margin-bottom: 24px; }
+        .aviso {
+            text-align: center;
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 10px 16px;
+            max-width: 1100px;
+            margin: 0 auto 10px auto;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+
+        /* --- dos columnas: lista por número (fija) y ranking en vivo (se reordena) --- */
+        .columnas {
+            display: flex;
+            gap: 28px;
+            max-width: 1100px;
+            margin: 24px auto 0 auto;
+            align-items: flex-start;
+        }
+        .columna { flex: 1; min-width: 0; }
+        .columna h2 {
+            font-size: 15px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 0 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #334155;
+        }
+        .fila-num, .fila-rank {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding: 6px 8px;
+            border-radius: 8px;
+        }
+        .fila-num { background: #1e293b; }
+        .fila-num .numero { width: 34px; text-align: center; font-size: 13px; color: #94a3b8; font-weight: bold; }
+        .fila-num .nombre { flex: 1; font-size: 14px; }
+        .fila-num .votos-mini { font-size: 13px; color: #cbd5e1; }
+
+        .fila-rank .posicion { width: 34px; text-align: center; font-size: 13px; color: #64748b; font-weight: bold; }
+        .fila-rank .nombre { width: 200px; font-size: 14px; }
+        .fila-rank .barra-fondo {
+            flex: 1;
+            background: #1e293b;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 22px;
+        }
+        .fila-rank .barra { height: 100%; background: #2563eb; transition: width 0.4s ease; }
+        .fila-rank .valor { width: 80px; text-align: right; font-size: 13px; color: #cbd5e1; }
+
+        /* --- vista final (tarjetas de los 7 electos) --- */
+        .cerrada-titulo {
+            text-align: center;
+            font-size: 26px;
+            color: #fbbf24;
+            margin: 8px 0 20px 0;
+        }
+        .tarjetas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            max-width: 1100px;
+            margin: 0 auto 28px auto;
+        }
+        .tarjeta {
+            background: #1e293b;
+            border: 2px solid #22c55e;
+            border-radius: 14px;
+            padding: 14px;
+            text-align: center;
+        }
+        .tarjeta .puesto { color: #fbbf24; font-weight: bold; font-size: 22px; margin-bottom: 6px; }
+        .tarjeta .numero-candidato { color: #94a3b8; font-size: 12px; margin-bottom: 8px; }
+        .tarjeta img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #22c55e;
+            margin-bottom: 10px;
+        }
+        .tarjeta .sin-foto {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #334155;
+            margin: 0 auto 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        .tarjeta .nombre-tarjeta { font-weight: bold; font-size: 15px; margin-bottom: 4px; }
+        .tarjeta .datos-tarjeta { color: #cbd5e1; font-size: 13px; }
+        .resto-titulo {
+            text-align: center;
+            color: #94a3b8;
+            margin: 20px 0 10px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    {% if organizacion_logo %}
+    <div class="logo-esquina">
+        <img src="{% static organizacion_logo %}" alt="{{ organizacion_nombre }}">
+    </div>
+    {% endif %}
+
+    <h1>Resultados en vivo - {{ votacion_titulo }}</h1>
+    <p class="subtitulo">Participantes que han votado: <strong id="total-participantes">-</strong></p>
+
+    <div id="vista-cerrada" style="display: none;">
+        <div class="cerrada-titulo">🏆 {{ votacion_subtitulo_electos }} 🏆</div>
+        <div class="tarjetas" id="tarjetas-electos"></div>
+        <div class="resto-titulo">Resto de los candidatos</div>
+    </div>
+
+    <div class="aviso" id="ganador" style="display: none;"></div>
+
+    <div class="columnas">
+        <div class="columna">
+            <h2>Candidatos (por letra)</h2>
+            <div id="lista-numero"></div>
+        </div>
+        <div class="columna">
+            <h2>Ranking en vivo (por votos)</h2>
+            <div id="lista-ranking"></div>
+        </div>
+    </div>
+
+    <script>
+        function ordinal(n) {
+            return `${n}°`;
+        }
+
+        function letra(numero) {
+            // 1=A, 2=B, ... igual que en la papeleta impresa.
+            return String.fromCharCode(64 + numero);
+        }
+
+        async function actualizar() {
+            try {
+                const resp = await fetch("{% url 'votos:resultados_en_vivo_datos' %}");
+                const datos = await resp.json();
+
+                document.getElementById('total-participantes').textContent = datos.total_participantes;
+
+                const vistaCerrada = document.getElementById('vista-cerrada');
+                const tarjetasElectos = document.getElementById('tarjetas-electos');
+
+                if (datos.cerrada) {
+                    vistaCerrada.style.display = 'block';
+                    tarjetasElectos.innerHTML = '';
+                    datos.candidatos.filter(c => c.electo).forEach((c, i) => {
+                        const tarjeta = document.createElement('div');
+                        tarjeta.className = 'tarjeta';
+                        const foto = c.foto_url
+                            ? `<img src="${c.foto_url}" alt="${c.nombre}">`
+                            : `<div class="sin-foto">👤</div>`;
+                        tarjeta.innerHTML = `
+                            <div class="puesto">${ordinal(i + 1)}</div>
+                            <div class="numero-candidato">${letra(c.numero)}</div>
+                            ${foto}
+                            <div class="nombre-tarjeta">${c.nombre}</div>
+                            <div class="datos-tarjeta">${c.votos} votos (${c.porcentaje}%)</div>
+                        `;
+                        tarjetasElectos.appendChild(tarjeta);
+                    });
+                } else {
+                    vistaCerrada.style.display = 'none';
+                }
+
+                const elGanador = document.getElementById('ganador');
+                elGanador.style.display = datos.texto_ganador ? 'block' : 'none';
+                elGanador.textContent = datos.texto_ganador || '';
+
+                // Columna izquierda: siempre ordenada por número de candidato, fija.
+                const porNumero = [...datos.candidatos].sort((a, b) => a.numero - b.numero);
+                const listaNumero = document.getElementById('lista-numero');
+                listaNumero.innerHTML = '';
+                porNumero.forEach((c) => {
+                    const fila = document.createElement('div');
+                    fila.className = 'fila-num';
+                    fila.innerHTML = `
+                        <div class="numero">${letra(c.numero)}</div>
+                        <div class="nombre">${c.nombre}</div>
+                        <div class="votos-mini">${c.votos} votos</div>
+                    `;
+                    listaNumero.appendChild(fila);
+                });
+
+                // Columna derecha: ranking en vivo, se reordena según los votos.
+                const maxVotos = Math.max(1, ...datos.candidatos.map(c => c.votos));
+                const listaRanking = document.getElementById('lista-ranking');
+                listaRanking.innerHTML = '';
+                datos.candidatos.forEach((c, i) => {
+                    const ancho = (c.votos / maxVotos) * 100;
+                    const fila = document.createElement('div');
+                    fila.className = 'fila-rank';
+                    fila.innerHTML = `
+                        <div class="posicion">${ordinal(i + 1)}</div>
+                        <div class="nombre">${letra(c.numero)} - ${c.nombre}</div>
+                        <div class="barra-fondo"><div class="barra" style="width: ${ancho}%"></div></div>
+                        <div class="valor">${c.votos} (${c.porcentaje}%)</div>
+                    `;
+                    listaRanking.appendChild(fila);
+                });
+            } catch (e) {
+                console.error('No se pudo actualizar resultados', e);
+            }
+        }
+
+        actualizar();
+        setInterval(actualizar, 3000);
+    </script>
+</body>
+</html>

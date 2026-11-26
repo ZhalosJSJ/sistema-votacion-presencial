@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar voto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f7;
+            margin: 0;
+            padding: 16px;
+        }
+        h1 { text-align: center; font-size: 22px; margin-bottom: 4px; }
+        .contador { text-align: center; color: #555; margin-bottom: 16px; }
+        .panel {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 480px;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .mensaje-exito {
+            background: #dcfce7;
+            color: #166534;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .mensaje-error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        label { display: block; font-weight: bold; margin-bottom: 6px; }
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            border: 2px solid #d1d5db;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+        .ayuda { color: #666; font-size: 13px; margin-top: 6px; }
+        button {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            margin-top: 14px;
+        }
+        .enlaces { text-align: center; margin-top: 8px; }
+        .enlaces a { color: #2563eb; text-decoration: none; margin: 0 8px; }
+        .lista-candidatos {
+            max-width: 480px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .lista-candidatos table { width: 100%; border-collapse: collapse; }
+        .lista-candidatos td { padding: 6px 4px; border-bottom: 1px solid #eee; font-size: 15px; }
+        .lista-candidatos td.numero { font-weight: bold; width: 36px; color: #2563eb; }
+    </style>
+</head>
+<body>
+    <h1>Registrar papeleta</h1>
+    <p class="contador">Participantes registrados hasta ahora: <strong>{{ total_participantes }}</strong></p>
+
+    <div class="panel">
+        {% if mensaje_exito %}
+            <div class="mensaje-exito">✅ {{ mensaje_exito }}</div>
+        {% endif %}
+        {% if error %}
+            <div class="mensaje-error">⚠️ {{ error }}</div>
+        {% endif %}
+
+        <form method="post" id="form-voto">
+            {% csrf_token %}
+            <label for="numeros">Números de los candidatos elegidos (hasta {{ max_votos_por_papeleta }})</label>
+            <input type="text" id="numeros" name="numeros" value="{{ texto_ingresado }}"
+                   placeholder="ej: 1 4 7" autofocus autocomplete="off" inputmode="numeric">
+            <p class="ayuda">Separa los números con espacio o coma. Puede ser entre 1 y {{ max_votos_por_papeleta }} números distintos.</p>
+            <button type="submit">Registrar papeleta</button>
+        </form>
+
+        <div class="enlaces">
+            <a href="{% url 'votos:resultados_en_vivo' %}">Ver resultados en vivo</a>
+            <a href="{% url 'votos:cerrar_votacion' %}">Cerrar votación</a>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="lista-candidatos">
+        <table>
+            {% for candidato in candidatos %}
+            <tr>
+                <td class="numero">{{ candidato.orden }}</td>
+                <td>{{ candidato.nombre }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <script>
+        // Deja el cursor listo en el campo de números para encadenar registros rápido.
+        document.getElementById('numeros').focus();
+    </script>
+</body>
+</html>

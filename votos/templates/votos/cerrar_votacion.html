@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cerrar votación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f7;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .tarjeta {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 24px;
+            max-width: 420px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { font-size: 22px; margin-bottom: 8px; }
+        p { color: #555; }
+        .aviso { font-size: 40px; margin-bottom: 12px; }
+        button {
+            margin-top: 16px;
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            background: #d9363e;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover { background: #b8262d; }
+        a { display: inline-block; margin-top: 16px; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="tarjeta">
+        {% if enviado is None %}
+            <div class="aviso">🛑</div>
+            <h1>Cerrar votación ahora</h1>
+            <p>
+                Esto envía por correo el Excel con los resultados hasta este momento.
+                No se borra ni modifica ninguna papeleta ya ingresada — puedes
+                seguir registrando votos después si quieres.
+            </p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit">Cerrar votación y enviar resultados</button>
+            </form>
+        {% elif enviado %}
+            <div class="aviso">✅</div>
+            <h1>Resultados enviados</h1>
+            <p>Se envió el Excel con los resultados actuales al correo del organizador.</p>
+        {% else %}
+            <div class="aviso">⚠️</div>
+            <h1>No se pudo enviar el correo</h1>
+            <p>Revisa la configuración de correo (.env) e inténtalo de nuevo. Los datos de la votación no se vieron afectados.</p>
+        {% endif %}
+        <div>
+            <a href="{% url 'votos:registrar_voto' %}">Volver a registrar votos</a> ·
+            <a href="/admin/">Panel de administración</a>
+        </div>
+    </div>
+</body>
+</html>
